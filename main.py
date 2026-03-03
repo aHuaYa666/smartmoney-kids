@@ -20,14 +20,22 @@ def get_db():
 def read_root():
     return {"message": "Welcome to SmartMoney Kids Backend", "status": "Active"}
 
-@app.post("/transactions/", response_model=schemas.Transaction)
+@app.post("/transactions/", response_model=schemas.Transaction, status_code=status.HTTP_201_CREATED)
 def create_transaction(transaction: schemas.TransactionCreate, db: Session = Depends(get_db)):
+    # Business Logic: Check if spending exceeds balance
+    if transaction.type.lower() == "spend":
+        current_balance = get_total_balance(db)["current_balance"]
+        if transaction.amount > current_balance:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Insufficient funds. Current balance is {current_balance}"
+            )
+    
     db_transaction = models.Transaction(**transaction.dict())
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
     return db_transaction
-
 @app.get("/transactions/", response_model=List[schemas.Transaction])
 def read_transactions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return db.query(models.Transaction).offset(skip).limit(limit).all()
@@ -48,3 +56,4 @@ def get_total_balance(db: Session = Depends(get_db)):
         "current_balance": total_save - total_spend,
         "currency": "USD"
     }
+
