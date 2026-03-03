@@ -27,5 +27,10 @@ The core backend architecture is complete and fully functional, featuring automa
 3. **Run the server**: `uvicorn main:app --reload`
 4. **Explore the API**: Open `http://127.0.0.1:8000/docs` to interact with the endpoints.
 
+### 🧪 Run Automated Tests
+To verify the business logic (Balance calculation & Overdraft protection):
+```bash
+pytest
+
 ## 🌟 Why This Project?
 Financial automation isn't just for adults. This project demonstrates my ability to build secure, scalable backend systems that simplify complex data workflows—skills I am eager to bring to the **Technology Automation** team at BCD Travel.
