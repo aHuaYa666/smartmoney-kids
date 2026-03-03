@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 import models, schemas, database
@@ -56,4 +56,5 @@ def get_total_balance(db: Session = Depends(get_db)):
         "current_balance": total_save - total_spend,
         "currency": "USD"
     }
+
 
